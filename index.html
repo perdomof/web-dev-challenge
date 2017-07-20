@@ -22,8 +22,13 @@
 				<label for="phrase-input">Phrase</label>
 				<input id="phrase-input" class="text-center form-control" type="text" placeholder="abcba">
 			</div>
-			<p class="feedback">Is it a palindrome?</p>
-			<button class="btn btn-default">Check</button>
+			<br>
+			<span id="modifiers"> 
+				<input id="ignorePunctuationCheckBox" class="checkModifier" type="checkbox"> Ignore Punctuation
+  				<input id="ignoreWhitespaceCheckBox" class="checkModifier" type="checkbox"> Ignore Whitespace
+  			</span>
+  			<br> <!-- Suggestion: removed because it is duplication of information -->
+			<button id="executeCheck" class="btn btn-default">Check</button>
 		</form>
 
 
@@ -34,6 +39,11 @@
 		<div id="error" class="alert alert-danger" role="alert">
 			<p><b>Uh oh!</b> That doesn't seem to be a palindrome. Check what you've entered and try again...</p>
 		</div>
+	</div>
+
+	<div id="history" class="container text-center">
+		<label for="History">History</label>
+		<div id="log"></div>
 	</div>
 
 	<div id="test-container" class="container">
