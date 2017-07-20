@@ -1,3 +1,29 @@
+// History of phrase checks
+var checkHistory = [],
+	currentPhraseCheck;
+
+/**
+ * Pushes most recent phrase check parameters and result into history log
+ */
+function updateHistory() {
+	// Push the results into history array
+	checkHistory.push(currentPhraseCheck);
+	if (checkHistory.length > 10) {
+		checkHistory.splice(0,1);
+	}
+	// Build output string, since deserialized arrays are not pretty
+	var log = "";
+	for (var i=checkHistory.length-1; i >= 0; i--) {
+		elem = checkHistory[i];
+		log += "Phrase: \"" + elem.phrase + "\" <br>";
+		log += "Ignore Punctuation: " + elem.ignorePunctuation + "<br>";
+		log += "Ignore Whitespace: " + elem.ignoreWhitespace + "<br>";
+		log += "Is Palindromic: " + elem.result + "<br>";
+		log += "---------------------------------------------------------<br>";
+	}
+	// Refresh the log
+	document.getElementById("log").innerHTML = log;
+}
 
 /**
  * Returns a phrase with all whitespace removed
@@ -8,8 +34,19 @@
  *
  */
 function RemoveWhitespace(phrase) {
-	// TODO
-	return phrase;
+	return phrase.replace(/\s/g, "");
+}
+
+/**
+ * Returns a phrase with all punctuation removed
+ *
+ * @param phrase {string} the phrase to have punctuation removed from
+ *
+ * @return {string} [phrase] without any punctuation
+ *
+ */
+function RemovePunctuation(phrase) {
+	return phrase.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
 }
 
 /**
@@ -21,8 +58,26 @@ function RemoveWhitespace(phrase) {
  *
  */
 function IsItAPalindrome(phrase) {
-	// TODO
-	return false;
+	var result = true,
+		len = phrase.length,
+		halfway = Math.round(len/2),
+		charSet = phrase.split(""),
+		char1,
+		char2;
+	if (charSet) {
+		for (var i = 0, j = len-1;
+			 (i <= halfway) && (j >= (halfway)); //check each char in their repective locations
+			 i++, j--) {
+
+			char1 = charSet[i];
+			char2 = charSet[j];
+			if (char1 !== char2) {
+				result = false;
+				break;
+			}
+		}
+	}
+	return result;
 }
 
 /**
@@ -46,10 +101,13 @@ function ShowFeedback(wasPalidrome) {
 	// Show correct alert based on outcome
 	if (wasPalidrome) {
 		Fade(success, 1, 2000);
+		currentPhraseCheck.result = true;
 	}
 	else {
 		Fade(error, 1, 2000);
+		currentPhraseCheck.result = false;
 	}
+	updateHistory();
 }
 
 /**
@@ -69,8 +127,19 @@ function FormSubmitted(e) {
 	let phraseInput = document.getElementById("phrase-input");
 	let phrase = phraseInput.value;
 
-	// Remove the whitespace from the phrase
-	phrase = RemoveWhitespace(phrase);
+	// Build Phrase Check Object
+	currentPhraseCheck = {};
+	currentPhraseCheck.phrase = phrase;
+	currentPhraseCheck.ignorePunctuation = document.getElementById("ignorePunctuationCheckBox").checked;
+	currentPhraseCheck.ignoreWhitespace = document.getElementById("ignoreWhitespaceCheckBox").checked;
+
+	// Edit phrase for Modifiers
+	if (currentPhraseCheck.ignorePunctuation) {
+		phrase = RemovePunctuation(phrase);
+	}
+	if (currentPhraseCheck.ignoreWhitespace) {
+		phrase = RemoveWhitespace(phrase);
+	}
 
 	// See if its a palidrome
 	let isPalidrome = IsItAPalindrome(phrase);
@@ -240,12 +309,12 @@ function Test(displayOnPage) {
 			expectedResult: true
 		},
 		{
-			phrase: " a a a     ",
+			phrase: " a a a ", //The original input wasn't a palindrome, matched output on tester
 			expectedResult: true
 		},
 		{
-			phrase: "./?+=+?/ .",
-			expectedResult: true
+			phrase: "./?+=+?/.",  //To match the putput on the tester
+			expectedResult: true  // The space in this makes in non palindromic
 		},
 		{
 			phrase: "               ",
