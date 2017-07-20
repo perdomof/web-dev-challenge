@@ -24,3 +24,26 @@
 .alert {
 	display: none;
 }
+
+#executeCheck {
+	margin-top: 15px;
+}
+
+input#ignoreWhitespaceCheckBox {
+    margin-left: 20px;
+    margin-top: 15px;
+}
+
+div#log {
+    border: 1px gray dotted;
+    padding: 15px;
+    max-height: 300px;
+    overflow: auto;
+}
+
+div#history {
+    border: black 1px solid;
+    padding: 7px;
+    max-height: 350px;
+}
+
