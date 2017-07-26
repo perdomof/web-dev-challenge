@@ -44,6 +44,6 @@ div#log {
 div#history {
     border: black 1px solid;
     padding: 7px;
-    max-height: 350px;
+    max-height:100px;
 }
 
